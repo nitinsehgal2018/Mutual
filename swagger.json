@@ -1,0 +1,1536 @@
+{
+	"swagger": "2.0",
+	"info": {
+		"version": "1.0.0",
+		"title": "Liberty Mutual API",
+		"description": "",
+		"contact": {
+			"name": "Liberty Mutual",
+			"url": "https://lmelg-api.mobileprogramming.net"
+		}
+	},
+	"host": "lmelg-api.mobileprogramming.net",
+	"basePath": "/",
+	"schemes": [
+    "https",
+		"http"
+   
+	],
+	"securityDefinitions": {
+		"JWT": {
+			"type": "apiKey",
+			"name": "authorization",
+			"in": "header",
+			"description": "Enter valid API authorization token"
+		}
+	},
+	"tags": [{
+			"name": "User API",
+			"description": "User API can be used on front end only."
+		},
+    {
+      "name": "Admin API",
+      "description": "Admin API can be used for backend only."
+    },
+		{
+			"name": "Event Controller",
+			"description": "API to manage users."
+		}
+	],
+	"paths": {
+ 
+    "/user/login": {
+      "post": {
+        "tags": [
+          "User API"
+        ],
+        "summary": "Login User.",
+        "description": "To login user into account",
+        "operationId": "Login",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",           
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/signIn"
+            }
+          }      
+      ] 
+      ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/signup": {
+      "post": {
+        "tags": [
+          "User API"
+        ],
+        "summary": "SignUp User.",
+        "description": "To SignUp user into account (role=>Broker,Direct)",
+        "operationId": "SignUp",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",           
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/signUp"
+            }
+          }      
+      ] 
+      ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/resetPassword": {
+      "post": {
+        "tags": [
+          "User API"
+        ],
+        "summary": "Reset Password.",
+        "description": "To Reset Password",
+        "operationId": "resetPassword",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          },
+          {
+            "in": "body",
+            "name": "body",           
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/resetPassword"
+            }
+          }      
+      ] 
+      ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/changePassword": {
+      "post": {
+        "tags": [
+          "User API"
+        ],
+        "summary": "Change Password.",
+        "description": "To Change Password",
+        "operationId": "change_password",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          },
+          {
+            "in": "body",
+            "name": "body",           
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/changePassword"
+            }
+          }      
+      ] 
+      ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/forgotPassword": {
+      "post": {
+        "tags": [
+          "User API"
+        ],
+        "summary": "Forgot Password.",
+        "description": "To Forgot Password",
+        "operationId": "forgot_password",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",           
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/forgotPassword"
+            }
+          }      
+      ] 
+      ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/resetForgotPassword": {
+      "post": {
+        "tags": [
+          "User API"
+        ],
+        "summary": "Reset User.",
+        "description": "To reset user password into account",
+        "operationId": "resetForgotPassword",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",           
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/resetForgotPassword"
+            }
+          }      
+      ] 
+      ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/updateProfile": {
+      "put": {
+        "tags": [
+          "User API"
+        ],
+        "summary": "Update Profile.",
+        "description": "To update Profile",
+        "operationId": "updateProfile",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          },
+          {
+            "in": "body",
+            "name": "body",           
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/updateProfile"
+            }
+          }      
+      ] 
+      ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/getProfile": {
+      "get": {
+        "tags": [
+          "User API"
+        ],
+        "summary": "Get User Profile.",
+        "description": "To getProfile list",
+        "operationId": "getProfile",
+        "produces": [
+          "application/json"
+        ] ,
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          }               
+        ] ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },   
+    "/user/getProduct": {
+      "get": {
+        "tags": [
+          "User API"
+        ],
+        "summary": "Get Product.",
+        "description": "To getProduct list",
+        "operationId": "getProduct",
+        "produces": [
+          "application/json"
+        ] ,
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "description": "page numebr",
+            "required": true,
+            "default":1,
+            "schema": {
+              "type": "integer"
+            }
+          }      
+      ] ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/getVideo": {
+      "get": {
+        "tags": [
+          "User API"
+        ],
+        "summary": "Get User Videos.",
+        "description": "To Videos list",
+        "operationId": "getVideo",
+        "produces": [
+          "application/json"
+        ] ,
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          }               
+        ] ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/getFAQ": {
+      "get": {
+        "tags": [
+          "User API"
+        ],
+        "summary": "Get FAQ.",
+        "description": "To FAQ",
+        "operationId": "getFAQ",
+        "produces": [
+          "application/json"
+        ] ,
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          }               
+        ] ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/getProgram": {
+      "get": {
+        "tags": [
+          "User API"
+        ],
+        "summary": "Get program, email template and benefits.",
+        "description": "To email template list",
+        "operationId": "getProgram",
+        "produces": [
+          "application/json"
+        ] ,
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          }               
+        ] ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/login": {
+      "post": {
+        "tags": [
+          "Admin API"
+        ],
+        "summary": "Login Admin.",
+        "description": "To login Admin into account",
+        "operationId": "LoginAdmin",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",           
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/adminLogin"
+            }
+          }      
+      ] 
+      ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/addUser": {
+      "post": {
+        "tags": [
+          "Admin API"
+        ],
+        "summary": "Add User.",
+        "description": "To Add user into account (role=>Normal)",
+        "operationId": "addUser",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          },
+          {
+            "in": "body",
+            "name": "body",           
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/addUser"
+            }
+          }      
+      ] 
+      ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/blockUnblockUser": {
+      "post": {
+        "tags": [
+          "Admin API"
+        ],
+        "summary": "block Unblock User.",
+        "description": "To block and unblock user",
+        "operationId": "blockUnblockUser",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          },
+          {
+            "in": "body",
+            "name": "body",           
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/blockUnblockUser"
+            }
+          }      
+      ] 
+      ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/deleteUser": {
+      "delete": {
+        "tags": [
+          "Admin API"
+        ],
+        "summary": "deleteUser User.",
+        "description": "To delete user",
+        "operationId": "deleteUser",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          },
+          {
+            "in": "body",
+            "name": "body",           
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/deleteUser"
+            }
+          }      
+      ] 
+      ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/addCategory": {
+      "post": {
+        "tags": [
+          "Admin API"
+        ],
+        "summary": "Add Category.",
+        "description": "To Add Category",
+        "operationId": "addCategory",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          },
+          {
+            "in": "body",
+            "name": "body",           
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/addCategory"
+            }
+          }      
+      ] 
+      ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/getCategory": {
+      "get": {
+        "tags": [
+          "Admin API"
+        ],
+        "summary": "Get Category.",
+        "description": "To Get Category",
+        "operationId": "getCategory",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          }               
+      ] 
+      ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/blockUnblockCategory": {
+      "post": {
+        "tags": [
+          "Admin API"
+        ],
+        "summary": "block Unblock Category.",
+        "description": "isBlocked  (0=>non_blocked,1=>blocked)" ,
+        "operationId": "blockUnblockCategory",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          },
+          {
+            "in": "body",
+            "name": "body",           
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/blockUnblockCategory"
+            }
+          }      
+      ] 
+      ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/addProduct": {
+      "post": {
+        "tags": [
+          "Admin API"
+        ],
+        "summary": "Add Product.",
+        "description": "To Add Product",
+        "operationId": "addProduct",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",           
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/addProduct"
+            }
+          }      
+      ],
+      "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/getProduct": {
+      "get": {
+        "tags": [
+          "Admin API"
+        ],
+        "summary": "Get Product.",
+        "description": "To getProduct list",
+        "operationId": "getProduct",
+        "produces": [
+          "application/json"
+        ] ,
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "description": "page numebr",
+            "required": true,
+            "default":1,
+            "schema": {
+              "type": "integer"
+            }
+          }      
+      ] ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/deleteProduct/{Id}": {
+      "delete": {
+        "tags": [
+          "Admin API"
+        ],
+        "summary": "delete Product.",
+        "description": "To delete Product",
+        "operationId": "deleteProduct",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          },
+          {
+            "in": "path",
+            "name": "Id",   
+            "type": "number",        
+            "required": true
+          }      
+      ] 
+      ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/addVideo": {
+      "post": {
+        "tags": [
+          "Admin API"
+        ],
+        "summary": "Add Video.",
+        "description": "To Add Video",
+        "operationId": "addVideo",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",           
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/addVideo"
+            }
+          }      
+      ],
+      "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/getVideo": {
+      "get": {
+        "tags": [
+          "Admin API"
+        ],
+        "summary": "Get Video.",
+        "description": "To Get Video",
+        "operationId": "getVideo",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "description": "page numebr",
+            "required": true,
+            "default":1,
+            "schema": {
+              "type": "integer"
+            }
+          }              
+      ] 
+      ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/deleteVideo/{Id}": {
+      "delete": {
+        "tags": [
+          "Admin API"
+        ],
+        "summary": "delete Video.",
+        "description": "To delete Video",
+        "operationId": "deleteVideo",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          },
+          {
+            "in": "path",
+            "name": "Id",  
+            "type": "number",          
+            "required": true
+          }      
+      ] 
+      ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/addFAQ": {
+      "post": {
+        "tags": [
+          "Admin API"
+        ],
+        "summary": "Add FAQ.",
+        "description": "To Add FAQ",
+        "operationId": "addFAQ",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",           
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/addFAQ"
+            }
+          }      
+      ],
+      "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/getFAQ": {
+      "get": {
+        "tags": [
+          "Admin API"
+        ],
+        "summary": "Get FAQ.",
+        "description": "To Get FAQ",
+        "operationId": "getFAQ",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "description": "page numebr",
+            "required": true,
+            "default":1,
+            "schema": {
+              "type": "integer"
+            }
+          }              
+      ] 
+      ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/deleteFAQ/{Id}": {
+      "delete": {
+        "tags": [
+          "Admin API"
+        ],
+        "summary": "delete FAQ.",
+        "description": "To delete FAQ",
+        "operationId": "deleteFAQ",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          },
+          {
+            "in": "path",
+            "name": "Id",  
+            "type": "number",          
+            "required": true
+          }      
+      ] 
+      ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    
+    "/admin/addEmailTemplate": {
+      "post": {
+        "tags": [
+          "Admin API"
+        ],
+        "summary": "Add Email template.",
+        "description": "To Add Emal",
+        "operationId": "addEmailTemplate",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",           
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/addEmailTemplate"
+            }
+          }      
+      ],
+      "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/deleteProgram/{Id}": {
+      "delete": {
+        "tags": [
+          "Admin API"
+        ],
+        "summary": "delete Program.",
+        "description": "To delete Program",
+        "operationId": "deleteProgram",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          },
+          {
+            "in": "path",
+            "name": "Id",  
+            "type": "number",          
+            "required": true
+          }      
+      ] 
+      ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/blockUnblockProgram": {
+      "post": {
+        "tags": [
+          "Admin API"
+        ],
+        "summary": "block Unblock Category.",
+        "description": "isBlocked  (0=>non_blocked,1=>blocked)" ,
+        "operationId": "blockUnblockCategory",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          },
+          {
+            "in": "body",
+            "name": "body",           
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/blockUnblockProgram"
+            }
+          }      
+      ] 
+      ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "Bearer": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+    }
+  },
+  "definitions": {
+    "signIn": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"         
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "signUp": {
+      "type": "object",
+      "properties": {
+        "firstname": {
+          "type": "string"         
+        },
+        "lastname": {
+          "type": "string"         
+        },
+        "email": {
+          "type": "string"         
+        },
+        "role": {
+          "type": "string",
+          "example": "Broker"
+        },
+        "phone": {
+          "type": "integer"
+        }
+      }
+    },
+    "changePassword": {
+      "type": "object",
+      "properties": {
+        "current_pass": {
+          "type": "string"         
+        },
+        "new_pass": {
+          "type": "string"
+        },
+        "confirm_pass": {
+          "type": "string"
+        }
+      }
+    },
+    "updateProfile": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"         
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "resetPassword": {
+      "type": "object",
+      "properties": {       
+        "new_pass": {
+          "type": "string"
+        },
+        "confirm_pass": {
+          "type": "string"
+        }
+      }
+    },
+    "forgotPassword": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"         
+        }
+      }
+    },
+    "resetForgotPassword": {
+      "type": "object",
+      "properties": {
+        "resetPasswordToken": {
+          "type": "string"         
+        },
+        "new_pass": {
+          "type": "string"
+        },
+        "confirm_pass": {
+          "type": "string"
+        }
+      }
+    },
+    "adminLogin": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"         
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "addUser": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"         
+        },
+        "lastName": {
+          "type": "string"         
+        },
+        "email": {
+          "type": "string"         
+        },
+        "role": {
+          "type": "string",
+          "example": "Normal"
+        },
+        "brokered": {
+          "type": "string",
+          "example": "Yes"
+        },
+        "payroll": {
+          "type": "string",
+          "example": "Yes"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "blockUnblockUser": {
+      "type": "object",
+      "properties": {
+        "isBlocked": {
+          "type": "number"         
+        },
+        "userId": {
+          "type": "number"         
+        }       
+      }
+    },
+    "deleteUser": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "number"         
+        }       
+      }
+    },
+    "addCategory": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"         
+        },        
+        "description": {
+          "type": "string"
+        }      
+      }
+    },
+    "blockUnblockCategory": {
+      "type": "object",
+      "properties": {
+        "isBlocked": {
+          "type": "number"         
+        },
+        "catId": {
+          "type": "number"         
+        }       
+      }
+    },
+    "addProduct": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"         
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "image": {
+          "type": "string"
+        }
+      }
+    },
+    "addFAQ": {
+      "type": "object",
+      "properties": {
+        "categoryId": {
+          "type": "number"         
+        },
+        "question": {
+          "type": "string"
+        },
+        "answer": {
+          "type": "string"
+        }
+      }
+    },
+    "addVideo": {
+      "type": "object",
+      "properties": {
+        "categoryId": {
+          "type": "number"         
+        },
+        "videoPath": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "getProduct": {
+      "type": "object",
+      "properties": {        
+      }
+    },
+    "addEmailTemplate": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"         
+        },
+        "description": {
+          "type": "string"
+        },
+        "categoryId": {
+          "type": "number"
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "SuccessResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "success"
+        },
+        "message": {
+          "type": "string",
+          "example": "Some relevent message"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "error"
+        },
+        "message": {
+          "type": "string",
+          "description": "Error message.",
+          "example": "Network error found. Please try after some time."
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  }
+}
