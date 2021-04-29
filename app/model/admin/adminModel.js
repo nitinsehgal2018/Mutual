@@ -8,6 +8,7 @@ const fs = require('fs');
 const mail = require('../../middleware/mail.js');
 const readXlsxFile = require("read-excel-file/node");
 const path = require('path');     
+const AWS = require("aws-sdk");
 const { exit } = require('process');
 
 /* login user method */
@@ -163,16 +164,45 @@ module.exports.deleteProduct = async (Id) => {
     }
 }
 
+module.exports.getParentCategory = async (body) => {   
+    try {
+         
+        var conn = await connection.getConnection();   
+        const [rows, fields]  =  await conn.execute('SELECT * FROM categories WHERE parent_id = ? AND isDeleted = ?',[0,0]);      
+        if (rows.length  ==  0) {
+            conn.release();
+            return {
+                    message: "No Parent Category exists.",
+                    loggedin: 0
+                };
+        } else {
+            conn.release();
+            return {              
+                status: 1,
+                message:"success",
+                data: rows           
+            };
+           
+        }
+       
+    } catch (error) {
+        if (!error.statusCode) {
+            error.statusCode = 500
+        }
+        return error;
+    }
+}
+
 
 module.exports.addCategory = async (body) => {   
     try {
          
         let payloadData = { 
-            name :body.name, description:body.description
+            name :body.name, description:body.description, parent_id:body.parent_id
         }
-        console.log(payloadData)
+       
         var conn = await connection.getConnection();   
-        const [rows, fields]  =  await conn.execute('SELECT * FROM categories WHERE name = ? ',[body.name]);      
+        const [rows, fields]  =  await conn.execute('SELECT * FROM categories WHERE name = ? AND isDeleted = ? ',[body.name, false]);      
         if (rows.length > 0) {
             conn.release();
             return {
@@ -181,8 +211,8 @@ module.exports.addCategory = async (body) => {
                 };
         } else {
     
-            const [rows, fields]  = await conn.execute(`INSERT INTO categories (name,description) VALUES(?,?)`,
-            [payloadData.name,payloadData.description]) ;
+            const [rows, fields]  = await conn.execute(`INSERT INTO categories (parent_id,name,description) VALUES(?,?,?)`,
+            [payloadData.parent_id,payloadData.name,payloadData.description]) ;
             
             conn.release();
             return {              
@@ -284,8 +314,8 @@ module.exports.addVideo = async (body) => {
                 };
         } else {
     
-            const [rows, fields]  = await conn.execute(`INSERT INTO videos (categoryId,videoPath,description) VALUES(?,?,?)`,
-            [body.categoryId,body.videoPath,body.description]) ;
+            const [rows, fields]  = await conn.execute(`INSERT INTO videos (categoryId,thumbnail,videoPath,title,description) VALUES(?,?,?,?,?)`,
+            [body.categoryId,body.thumbnail,body.videoPath,body.title,body.description]) ;
             
             conn.release();
             return {              
@@ -514,8 +544,8 @@ module.exports.blockUnblockProgram = async (isBlock, catId) => {
 
 
 /** **********************************************************************
- *                  List of User Related Function
- **************************************************************************/
+*                  List of User Related Function
+**************************************************************************/
 module.exports.addUser = async (body) => {   
     try {
         var conn = await connection.getConnection();     
@@ -526,10 +556,13 @@ module.exports.addUser = async (body) => {
         }
      
         // const password = 'qwerty'
+        // const invitationExpire = Date.now() + 3600000;
         const password = generatePassword();      
+        const days = 30
         const hashPassword = await bcrypt.hash(password, 12);
         body.password = hashPassword;
-        const [rows, fields]  =  await conn.execute('SELECT * FROM users WHERE email = ? ',[body.email]);      
+        body.invitationExpire = Date.now() + days*24*60*60*1000; // 1 hour
+        const [rows, fields]  =  await conn.execute('SELECT * FROM users WHERE email = ? AND isDeleted = ? ',[body.email,0]);      
         if (rows.length > 0) {
             conn.release();
             return {
@@ -542,11 +575,11 @@ module.exports.addUser = async (body) => {
             const lastInsertId = rows.insertId;     
                     
             const subject = "Liberty Mutual - SignUp";
-            const from = 'Liberty Mutual Admin<testing.mobileprogramming@gmail.com>';
+            const from = 'Liberty Mutual<testing.mobileprogramming@gmail.com>';
             const to = payloadData.email;
-            payloadData.logo = BaseURL+'/liberty_logo.jpg'
-            payloadData.password = password
-           
+            payloadData.logo = BaseURL+'/liberty_Logo_fill.jpg'
+            payloadData.password = password           
+            payloadData.web_url = "https://lmelg-app.mobileprogramming.net"
             const message = await template.signupTemplate(payloadData)
             const mailResponse = mail.mailfunction(from, to, subject, message);
 
@@ -565,6 +598,80 @@ module.exports.addUser = async (body) => {
                 lastName: payloadData.lastName ,
                 role : payloadData.role,
                 loggedin: 1             
+            };
+           
+        }
+       
+    } catch (error) {
+        if (!error.statusCode) {
+            error.statusCode = 500
+        }
+        return error;
+    }
+}
+
+module.exports.resendOTP = async (req) => {
+    try {
+        var conn = await connection.getConnection();     
+        var [rows,fields] =  await conn.execute('SELECT * FROM users WHERE id = ? ',[req.userId]); 
+
+        const password = generatePassword();  
+        const Hashpassword = await bcrypt.hash(password, 12);  
+        const days = 30
+        const invitationExpire =  Date.now() + days*24*60*60*1000;          
+        await conn.execute('UPDATE users SET password = ? , invitationExpire = ?, invitation = ? WHERE id = ?',
+        [Hashpassword,invitationExpire,0, req.userId]);
+       
+        let payloadData = {}     
+        const subject = "Liberty Mutual - SignUp Resend Invitation";
+        const from = 'Liberty Mutual Admin<testing.mobileprogramming@gmail.com>';
+        const to = rows[0].email;
+        payloadData.logo = BaseURL+'/liberty_logo.jpg'
+        payloadData.password = password
+        payloadData.url = rows[0].url
+       
+        const message = await template.signupTemplate(payloadData)
+        const mailResponse = mail.mailfunction(from, to, subject, message);
+
+
+        conn.release(); 
+        return {    
+            message:'Password reset successfully.'  ,
+            loggedin:1                  
+        };
+    } catch (error) {
+        if (!error.statusCode) {
+            error.statusCode = 500
+        }
+        return error;
+    }
+}
+
+module.exports.getUser = async (body) => {   
+    try {
+
+        const limit = 3 // page number
+        const page = Number(body.page) // calculate offset
+        const offset = (page - 1) * limit
+
+        var conn = await connection.getConnection();  
+        await conn.execute(`UPDATE users SET invitation = ? WHERE isDeleted = ? AND invitationExpire <= ${Date.now()} `,[1,0]); 
+        const [rows, fields]  =  await conn.execute(`SELECT id,email,url,role,brokered,payroll,isBlocked,isDeleted,firstTimeLogin,invitation,createdDate FROM users order by createdDate limit ${limit} OFFSET ${offset}`);      
+        if (rows.length == 0) {
+            conn.release();
+            return {
+                    message: "No Users exists.",
+                    status:0
+                };
+        } else {
+            const [result, fields]  =  await conn.execute(`SELECT id FROM users`);
+            conn.release();
+            return {              
+                status: 1,
+                message:"success",
+                data: rows ,
+                totalRecords:result.length,
+                page_number:page,          
             };
            
         }
@@ -799,31 +906,30 @@ module.exports.uploadUserExcel =  async (req, res) => {
     }
 }
 
-var AWS = require("aws-sdk");
-AWS.config.update({
-    "accessKeyId": "AKIARWLYRBSQ5Q5B7NUC",
-    "secretAccessKey": '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',
-    // "s3URL": "https://s3-us-west-2.amazonaws.com/mak-s3/",
-    "folder": {
-        "ProfilePics": "ProfilePics",
-        // "thumb": "thumb"
-    }
-});
-var s3 = new AWS.S3();
+
+
 module.exports.uploadPDF =  async (req, res) => {
+    AWS.config.update({
+        "accessKeyId": process.env.S3_ACCESS_KEY,
+        "secretAccessKey": process.env.S3_SECRET_KEY,
+        "folder": {
+            "ProfilePics": "ProfilePics"
+        }
+    });
+    var s3 = new AWS.S3();
     try {  
         // Reads Excel file  Check Coloumn field Name in Excel 
         let Filepath =  path.join(__dirname, '../../../uploads/') + req.file.filename;		 
         var checkFileError =  false;
         // console.log(req.file)
-        if (!req.file.mimetype.includes("pdf")) {
-            var response  = {
-                statusCode:200,
-                message:'Please upload an image and pdf file only'
-            }
-            fs.unlinkSync(Filepath);
-            return response;
-        } 
+        // if (!req.file.mimetype.includes("pdf")) {
+        //     var response  = {
+        //         statusCode:200,
+        //         message:'Please upload an image and pdf file only'
+        //     }
+        //     fs.unlinkSync(Filepath);
+        //     return response;
+        // } 
 
         if (req.file == undefined) {
             var response  = {
@@ -840,7 +946,9 @@ module.exports.uploadPDF =  async (req, res) => {
 			ACL: 'public-read',
 			Body: fs.createReadStream(Filepath),
 			// ContentType: 'image/jpg'
-			ContentType: 'application/pdf'
+			// ContentType: 'application/pdf'
+			// ContentType: 'application/vnd.ms-outlook'
+            // ContentType: 'video/mp4'
         };
         
         // upload to S3 Bucket
@@ -877,6 +985,8 @@ function generatePassword() {
         retVal = "";
     for (var i = 0, n = charset.length; i < length; ++i) {
         retVal += charset.charAt(Math.floor(Math.random() * n));
+        
     }
+    retVal += "@"
     return retVal;
 }

@@ -21,6 +21,7 @@ router.delete('/deleteProduct/:Id',adminController.validate('deleteProduct'),adm
  **************************************************************************/
 router.post('/addCategory',adminController.validate('addCategory'),adminController.addCategory);
 router.get('/getCategory',adminController.getCategory);
+router.get('/getParentCategory',adminController.getParentCategory);
 router.post('/blockUnblockCategory',adminController.validate('blockUnblockCategory'),adminController.blockUnblockCategory);
 
 
@@ -54,6 +55,8 @@ router.delete('/deleteFAQ/:Id',adminController.validate('deleteFAQ'),adminContro
  *        List of User Related  Routes likes add user, block user 
  **************************************************************************/
 router.post('/addUser',adminController.validate('addUser'),adminController.addUser);
+router.get('/getUser',adminController.getUser);
+router.post('/resendOTP',adminController.resendOTP);
 router.post('/blockUnblockUser',adminController.validate('blockUnblockUser'),adminController.blockUnblockUser);
 router.delete('/deleteUser',adminController.validate('deleteUser'),adminController.deleteUser);
 

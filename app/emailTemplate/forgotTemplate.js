@@ -267,11 +267,10 @@ module.exports.forgotTemplate = async (data) => {
                                           <tr>
                                               <td align="left" style="background:#FFFFFF;">
                                                   <br><br><p>
-                                                  Dear <b>${data.first_name} </b>
+                                                  Dear <b> User </b>
                                                 <br>                                                       
-                                                <br> 
-                                                Password Reset Confirmation.<br/>                                                 
-                                                Your password is ${data.password}  <br/>
+                                                <br> <br> 
+                                                We received a request to reset your password.<br/><br/>    
                                                 Please click on the following link, or paste this into your browser to complete the process:<br/>
                                                 ${data.url} <br/><br/>
                                                 If you did not request this, please ignore this email and your password will remain unchanged

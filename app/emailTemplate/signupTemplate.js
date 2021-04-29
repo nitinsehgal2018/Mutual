@@ -260,7 +260,7 @@ module.exports.signupTemplate = async (data) => {
                                   <table border="0" cellpadding="0" cellspacing="0" class="sectionWrap" id="content" style="background:#FFFFFF; border-radius:4px; box-shadow:0px 3px 0px #DDDDDD; overflow:hidden; width:600px">
                                       <tbody>
                                           <tr>
-                                              <td id="header" style="background-color:#FFDB50;color:#404040!important;" valign="top"><img alt="LibertyMutual Logo" src="${data.logo} style="display:block;margin:40px auto 0;width:170px!important;" width="120">
+                                              <td id="header" style="background-color:#FFDB50;color:#404040!important;" valign="top"><img alt="LibertyMutual Logo" src="${data.logo}" style="display:block;margin:40px auto 0;width:170px!important;" width="120">
                                                   <h1 style="font-size: 30px;">Welcome to Liberty Mutual</h1>
                                                   <p style="display:block;margin-bottom:50px;color:#FFFFFF;"></p>
                                               </td>
@@ -268,12 +268,13 @@ module.exports.signupTemplate = async (data) => {
                                           <tr>
                                               <td align="left" style="background:#FFFFFF;">
                                                   <br><br><p>
-                                                  Dear <b>${data.firstName} ${data.lastName} </b>
+                                                  Dear <b> User </b>
                                                 <br>                                                       
                                                 <br> 
                                                 Congratulation! Your account has been created successfully.<br/> 
-                                                Your password : ${data.password}  <br/> 
-                                                Your URL : ${data.url} 
+                                                Your Email : ${data.email}  <br/> 
+                                                Your Password : ${data.password}  <br/> 
+                                                Web URL : ${data.web_url} 
                                                   </p>
                                               </td>
                                           </tr>

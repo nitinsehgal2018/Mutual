@@ -1,6 +1,6 @@
 var userModel = require('../model/users/userModel.js');
 const jwt = require('jsonwebtoken');
-const { body, validationResult } = require('express-validator/check');
+const { body, validationResult, param,query} = require('express-validator/check');
 
 exports.validate = (method) => {
     switch (method) {
@@ -74,6 +74,30 @@ exports.validate = (method) => {
             return [              
               body('email').not().isEmpty().withMessage("Email is required").isEmail().withMessage("Please enter a valid email address")
               .isLength({ max: 50 }).withMessage("Email must be less than 50 characters"),
+            ]
+        }
+        case 'getContentVideo': {
+            return [               
+                // param('categoryId', "categoryId is required").not().isEmpty().
+                query('categoryId', "categoryId is required").not().isEmpty().
+                isNumeric().withMessage('categoryId must be numeric')           
+            ]
+        }
+        case 'getProduct': {
+            return [               
+                query('categoryId', "categoryId is required").not().isEmpty().
+                isNumeric().withMessage('categoryId must be numeric')     
+            ]
+        }
+        case 'getProgram': {
+            return [               
+                query('categoryId', "categoryId is required").not().isEmpty().
+                isNumeric().withMessage('categoryId must be numeric')     
+            ]
+        }
+        case 'search': {
+            return [               
+                query('keyword', "keyword is required").not().isEmpty()                 
             ]
         }
     }
@@ -270,6 +294,23 @@ module.exports.forgotPassword = async(req, res, next) => {
     }
 }
 
+/** method for Parent Category */
+module.exports.getParentCategory = async (req, res, next) => {
+    const errors = validationResult(req).formatWith(signupFailures);;
+    if (!errors.isEmpty()) {
+        res.status(422).json({ errors: errors.array() });
+        return;
+    }
+    const result = await userModel.getParentCategory(req.query)
+    if (result.status == 1) {     
+        res.status(200).json({ status: 1, "message": 'success', data:result.data });       
+    }
+    else {
+        res.status(200).json({ status: 0, "message": result.message });
+
+    }
+}
+
 /** method for getProduct */
 module.exports.getProduct = async (req, res, next) => {
     const errors = validationResult(req).formatWith(signupFailures);;
@@ -277,9 +318,8 @@ module.exports.getProduct = async (req, res, next) => {
         res.status(422).json({ errors: errors.array() });
         return;
     }
-    const result = await userModel.getProduct(req.query)
+    const result = await userModel.getProduct(req.query,req.body)
     if (result.status == 1) {
-        console.log(result);
         res.status(200).json({ status: 1, "message": 'success', totalRecord:result.totalRecords,page: result.page_number,data:result.data });       
     }
     else {
@@ -288,13 +328,16 @@ module.exports.getProduct = async (req, res, next) => {
     }
 }
 
+/** method for get Content Video */
 module.exports.getVideo = async (req, res, next) => {
     const errors = validationResult(req).formatWith(signupFailures);;
     if (!errors.isEmpty()) {
         res.status(422).json({ errors: errors.array() });
         return;
     }
-    const result = await userModel.getVideo(req.query)
+    // console.log( req.params)
+    // const Id = req.params.Id;
+    const result = await userModel.getVideo(req.query,req.body)
     if (result.status == 1) {
         res.status(200).json({ status: 1, "message": 'success', data:result.data});        
     }
@@ -327,14 +370,37 @@ module.exports.getProgram = async (req, res, next) => {
         res.status(422).json({ errors: errors.array() });
         return;
     }
-    const result = await userModel.getProgram(req.query)
+    const result = await userModel.getProgram(req.query,req.body)
     if (result.status == 1) {  
         res.status(200).json({ 
             status: 1, 
             message: 'success',
-            email_data:result.data, 
-            benefit_data:result.data_benefit,
-            slide_data:result.data_slide
+            data:result.data, 
+            // email_data:result.data, 
+            // benefit_data:result.data_benefit,
+            // slide_data:result.data_slide
+         });       
+    }
+    else {
+        res.status(200).json({ status: 0, "message": result.message });
+
+    }
+}
+
+module.exports.search = async (req, res, next) => {
+    const errors = validationResult(req).formatWith(signupFailures);;
+    if (!errors.isEmpty()) {
+        res.status(422).json({ errors: errors.array() });
+        return;
+    }
+    const result = await userModel.search(req.query,req.body)
+    if (result.status == 1) {  
+        res.status(200).json({ 
+            status: 1, 
+            message: 'success',
+            autoHome:result.autoHome,
+            vidoes:result.vidoes,
+            products:result.products,
          });       
     }
     else {

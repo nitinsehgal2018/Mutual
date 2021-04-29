@@ -9,12 +9,11 @@
 			"url": "https://lmelg-api.mobileprogramming.net"
 		}
 	},
-	"host": "lmelg-api.mobileprogramming.net",
+	"host": "localhost:1042",
 	"basePath": "/",
 	"schemes": [
-    "https",
-		"http"
-   
+		"http",
+    "https"
 	],
 	"securityDefinitions": {
 		"JWT": {
@@ -347,8 +346,8 @@
         "tags": [
           "User API"
         ],
-        "summary": "Get Product.",
-        "description": "To getProduct list",
+        "summary": "Get Additional Voluntary Benefits.",
+        "description": "To Additional Voluntary Benefits",
         "operationId": "getProduct",
         "produces": [
           "application/json"
@@ -364,13 +363,10 @@
           },
           {
             "in": "query",
-            "name": "page",
-            "description": "page numebr",
-            "required": true,
-            "default":1,
-            "schema": {
-              "type": "integer"
-            }
+            "name": "categoryId",
+            "description": "categoryId number",
+            "required": true,           
+            "type": "integer"
           }      
       ] ,
         "responses": {
@@ -391,7 +387,7 @@
         "tags": [
           "User API"
         ],
-        "summary": "Get User Videos.",
+        "summary": "Get Content Videos.",
         "description": "To Videos list",
         "operationId": "getVideo",
         "produces": [
@@ -405,7 +401,14 @@
             "required": true,
             "type": "string",
             "default": "Bearer {token}"
-          }               
+          } ,
+          {
+            "in": "query",
+            "name": "categoryId",
+            "description": "categoryId number",
+            "required": true,  
+            "type": "integer"
+          }              
         ] ,
         "responses": {
           "200": {
@@ -473,7 +476,14 @@
             "required": true,
             "type": "string",
             "default": "Bearer {token}"
-          }               
+          } ,
+          {
+            "in": "query",
+            "name": "categoryId",
+            "description": "categoryId number",
+            "required": true,  
+            "type": "integer"
+          }              
         ] ,
         "responses": {
           "200": {
@@ -488,6 +498,81 @@
         }
       }
     },
+    "/user/search": {
+      "get": {
+        "tags": [
+          "User API"
+        ],
+        "summary": "Get search Videos and Auto home.",
+        "description": "To search list",
+        "operationId": "search",
+        "produces": [
+          "application/json"
+        ] ,
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          } ,
+          {
+            "in": "query",
+            "name": "keyword",
+            "description": "keyword to be searched",
+            "required": true,  
+            "type": "string"
+          }              
+        ] ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/getParentCategory": {
+      "get": {
+        "tags": [
+          "User API"
+        ],
+        "summary": "Get Parent Category.",
+        "description": "To Parent Category list",
+        "operationId": "getParentCategory",
+        "produces": [
+          "application/json"
+        ] ,
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          }               
+        ] ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }, 
     "/admin/login": {
       "post": {
         "tags": [
@@ -553,6 +638,93 @@
           }      
       ] 
       ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/resendOTP": {
+      "post": {
+        "tags": [
+          "Admin API"
+        ],
+        "summary": "Add User.",
+        "description": "To Resent user passwod",
+        "operationId": "resendOTP",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          },
+          {
+            "in": "body",
+            "name": "body",           
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/resendOTP"
+            }
+          }      
+      ] 
+      ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/getUser": {
+      "get": {
+        "tags": [
+          "Admin API"
+        ],
+        "summary": "Get User list.",
+        "description": "To getUser list",
+        "operationId": "getUser",
+        "produces": [
+          "application/json"
+        ] ,
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "description": "page numebr",
+            "required": true,
+            "default":1,
+            "schema": {
+              "type": "integer"
+            }
+          }      
+      ] ,
         "responses": {
           "200": {
             "description": "Success"
@@ -637,6 +809,41 @@
               "$ref": "#/definitions/deleteUser"
             }
           }      
+      ] 
+      ,
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/admin/getParentCategory": {
+      "get": {
+        "tags": [
+          "Admin API"
+        ],
+        "summary": "Get Parent Category.",
+        "description": "To Parent Category",
+        "operationId": "getParentCategory",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "JWT token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "Bearer {token}"
+          }               
       ] 
       ,
         "responses": {
@@ -1393,6 +1600,14 @@
         }
       }
     },
+    "resendOTP": {
+      "type": "object",
+      "properties": {       
+        "userId": {
+          "type": "number"
+        }       
+      }
+    },
     "blockUnblockUser": {
       "type": "object",
       "properties": {
@@ -1415,6 +1630,9 @@
     "addCategory": {
       "type": "object",
       "properties": {
+        "parent_id": {
+          "type": "number"         
+        },  
         "name": {
           "type": "string"         
         },        
@@ -1471,7 +1689,13 @@
         "categoryId": {
           "type": "number"         
         },
+        "thumbnail": {
+          "type": "string"
+        },
         "videoPath": {
+          "type": "string"
+        },
+        "title": {
           "type": "string"
         },
         "description": {

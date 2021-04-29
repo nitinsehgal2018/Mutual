@@ -28,7 +28,10 @@ function checkAuth (req,res,next) {
         error.statusCode = 401;
         throw error;
     }
+    // console.log(decodedToken)
     req.body.userId = decodedToken.user_id;
+    req.body.brokered = decodedToken.brokered  == 'Yes' ? 1 : 0;
+    req.body.payroll  = decodedToken.payroll   == 'Yes' ? 1 : 0;
     next();   
 } 
 module.exports = checkAuth ;

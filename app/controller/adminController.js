@@ -12,8 +12,9 @@ exports.validate = (method) => {
         }
         case 'addCategory': {
             return [
-                body('name', "name is required").not().isEmpty(),             
-                body('description', "description is required").not().isEmpty(),
+                body('parent_id', "parent_id is required").not().isEmpty(),
+                body('name', "name is required").not().isEmpty().isLength({ max: 100 }).withMessage("Name must be less than 100 characters"),             
+                body('description', "description is required").not().isEmpty().isLength({max:500}).withMessage("Description must be less than 500 characters"),
                
             ]
         }
@@ -72,8 +73,10 @@ exports.validate = (method) => {
             return [               
                 body('categoryId', "categoryId is required").not().isEmpty()
                 .isNumeric().withMessage('Only numeric value allowed'),
+                body('thumbnail', "thumbnail is required").not().isEmpty(),
                 body('videoPath', "videoPath is required").not().isEmpty(),
-                body('description', "description is required").not().isEmpty()
+                body('description', "description is required").not().isEmpty(),
+                body('title', "title is required").not().isEmpty()
                
             ]
         }
@@ -100,8 +103,8 @@ exports.validate = (method) => {
             return [               
                 body('categoryId', "categoryId is required").not().isEmpty()
                 .isNumeric().withMessage('CategoryId must be numeric'),
-                body('answer', "answer is required").not().isEmpty(),
-                body('question', "question is required").not().isEmpty()
+                body('answer', "answer is required").not().isEmpty().isLength({ max: 1000 }).withMessage("Name must be less than 1000 characters"),
+                body('question', "question is required").not().isEmpty().isLength({ max: 500 }).withMessage("Name must be less than 500 characters")
                
             ]
         }
@@ -229,7 +232,22 @@ module.exports.getCategory = async (req, res, next) => {
     }
 }
 
+module.exports.getParentCategory = async (req, res, next) => {
+    
+    const errors = validationResult(req).formatWith(signupFailures);;
+    if (!errors.isEmpty()) {
+        res.status(422).json({ errors: errors.array() });
+        return;
+    }
+    const result = await adminModel.getParentCategory(req.body)
+    if (result.status == 1) {       
+        res.status(200).json({ status: 1,"message": result.message, data:result.data});        
+    }
+    else {
+        res.status(200).json({ status: 0, "message": result.message });
 
+    }
+}
 
 
 /** **********************************************************************
@@ -452,6 +470,41 @@ module.exports.addUser = async (req, res, next) => {
     const result = await adminModel.addUser(req.body)    
     if (result.loggedin == 1) {
         res.status(200).json({ status: 1, "message": 'success' });
+    }
+    else {
+        res.status(200).json({ status: 0, "message": result.message });
+
+    }
+}
+
+module.exports.resendOTP = async (req, res, next) => {
+ 
+    const errors = validationResult(req).formatWith(signupFailures);;
+    if (!errors.isEmpty()) {
+        res.status(422).json({ errors: errors.array() });
+        return;
+    }
+
+    const result = await adminModel.resendOTP(req.body)    
+    if (result.loggedin == 1) {
+        res.status(200).json({ status: 1, "message": 'success' });
+    }
+    else {
+        res.status(200).json({ status: 0, "message": result.message });
+
+    }
+}
+
+module.exports.getUser = async (req, res, next) => {
+    const errors = validationResult(req).formatWith(signupFailures);;
+    if (!errors.isEmpty()) {
+        res.status(422).json({ errors: errors.array() });
+        return;
+    }
+    const result = await adminModel.getUser(req.query)
+    if (result.status == 1) {
+        console.log(result);
+        res.status(200).json({ status: 1, "message": 'success', totalRecord:result.totalRecords,page: result.page_number,data:result.data });       
     }
     else {
         res.status(200).json({ status: 0, "message": result.message });
