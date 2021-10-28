@@ -38,10 +38,20 @@ router.get('/getProfile',valid_recruiter,userController.getProfile);
  **************************************************************************/
 router.get('/getProduct',valid_recruiter,userController.validate('getProduct'),userController.getProduct);
 router.get('/getFAQ',valid_recruiter,userController.getFAQ);
-router.get('/getVideo',valid_recruiter,userController.validate('getContentVideo'),userController.getVideo);   
-// router.get('/getVideo/:Id?',userController.validate('getContentVideo'),userController.getVideo);   
+router.get('/getVideo',valid_recruiter,userController.validate('getContentVideo'),userController.getVideo);    
 router.get('/getProgram',valid_recruiter,userController.validate('getProgram'),userController.getProgram);
-router.get('/search',valid_recruiter,userController.validate('search'),userController.search);
 router.get('/getParentCategory',valid_recruiter,userController.getParentCategory);
+router.get('/search',valid_recruiter,userController.validate('search'),userController.search);
+
+
+router.get('/getUsers',valid_recruiter,userController.getUsers);
+router.post('/addUser',valid_recruiter,userController.addUser);
+router.get('/getUserList',valid_recruiter,userController.getUserList);
+router.get('/getClientList',valid_recruiter,userController.getClientList);
+
+
+const upload = require("../middleware/upload");
+router.post('/convertPDFTOIMAGE',upload.single("file"),userController.convertPDFTOIMAGE);
+
 
 module.exports = router;

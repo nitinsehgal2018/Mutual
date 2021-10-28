@@ -11,7 +11,7 @@ function checkAuth (req,res,next) {
     let decodedToken;
     try {
         decodedToken = jwt.verify(token, process.env.JWT_KEY);
-        if(decodedToken.user_type != "ADMIN") {
+        if(decodedToken.user_type != "Admin") {
             res.status(401).send({
                 "error" : 1,
                 "message" : "Invalid Token!! You are not admin!"
@@ -26,7 +26,9 @@ function checkAuth (req,res,next) {
         error.statusCode = 401;
         throw error;
     }
+    console.log(decodedToken)
     req.userId = decodedToken.user_id;
+    
     next();   
 } 
 module.exports = checkAuth ;

@@ -14,6 +14,7 @@ const helmet = require('helmet')
 
 const app = express();
 app.use(express.static(path.join(__dirname, 'images')));
+app.use('/documents',express.static(path.join(__dirname, 'documents')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ limit: '10kb' }));
 app.use(helmet());
@@ -22,16 +23,14 @@ app.use(helmet.frameguard()); // set X-Frame-Options header
 app.use(helmet.xssFilter()); // set X-XSS-Protection header
 
 app.use( (request, response, next) => {
-    response.header("Access-Control-Allow-Origin", "*");
+    const allowedOrigins = ['https://lmelg-app.mobileprogramming.net', 'http://localhost:4200'];
+    const origin = request.headers.origin;
+    if (allowedOrigins.includes(origin)) {     
+      response.setHeader('Access-Control-Allow-Origin', origin);
+    }
     response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,authorization");
     response.header("X-Content-Type-Options", "nosniff");
     response.header("X-XSS-Protection", "1; mode=block");
-    // if (request.header('x-forwarded-proto') !== 'https') {
-    //     console.log(`https://${request.header('host')}${request.url}`)
-    //     response.redirect(`https://${request.header('host')}${request.url}`);       
-    // }  else {
-    //     next();
-    // }
     next();
     
 });
@@ -61,12 +60,13 @@ app.get('/test', async (req,res,next)=>{
 
 port = process.env.PORT || 1042;
 const httpServer = http.createServer(app);
-// const httpsServer = https.createServer({
-//     key: fs.readFileSync('/etc/letsencrypt/live/my_api_url/privkey.pem'),
-//     cert: fs.readFileSync('/etc/letsencrypt/live/my_api_url/fullchain.pem'),
-//   }, app);
+httpServer.listen(port, () => {
+  console.log(`HTTP Server running on port ${port}`);
+});
+httpServer.on('error', onError);
+httpServer.on('listening', onListening);  
 
-
+/*
 if(cluster.isMaster) {
     var numWorkers = require('os').cpus().length;  
     console.log('Master cluster setting up ' + numWorkers + ' workers...');
@@ -93,6 +93,7 @@ if(cluster.isMaster) {
     // console.log('Process ' + process.pid + ' is listening to all incoming requests');
   
 }
+*/
 
 function onError(error) {
     if (error.syscall !== 'listen') {

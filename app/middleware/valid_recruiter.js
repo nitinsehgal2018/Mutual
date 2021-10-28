@@ -11,13 +11,11 @@ function checkAuth (req,res,next) {
     let decodedToken;
     try {
         decodedToken = jwt.verify(token, process.env.RECRUITER_KEY);
-        if(!decodedToken) {
-            if(decodedToken.user_type != "Admin") {
-                res.status(401).send({
-                    "error" : 1,
-                    "message" : "Invalid Token!! "
-                });
-            }
+        if(decodedToken.user_type != "Normal") {
+            res.status(401).send({
+                "error" : 1,
+                "message" : "Invalid Token!! You are not authorized user"
+            });
         }
     } catch (err) {
         err.statusCode = 500;
@@ -28,8 +26,8 @@ function checkAuth (req,res,next) {
         error.statusCode = 401;
         throw error;
     }
-    // console.log(decodedToken)
-    req.body.userId = decodedToken.user_id;
+    console.log(decodedToken)
+    req.body.userId   = decodedToken.user_id;
     req.body.brokered = decodedToken.brokered  == 'Yes' ? 1 : 0;
     req.body.payroll  = decodedToken.payroll   == 'Yes' ? 1 : 0;
     next();   

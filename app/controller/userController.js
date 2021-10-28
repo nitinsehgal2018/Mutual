@@ -32,12 +32,8 @@ exports.validate = (method) => {
             return [          
               body('new_pass','new_pass is required').not().isEmpty()
               .matches(/((?=.*[A-Z])(?=.*\W).{6,6})/).withMessage("New Password should be minimum 6 characters and include a capital letter and a special character"),
-              body('confirm_pass').not().isEmpty().withMessage('Confirm Password is required').custom((value, { req }) => {
-                if (req.body.new_pass === value) {
-                    return true;
-                } else {
-                    return false;
-                }
+              body('confirm_pass').not().isEmpty().withMessage('Confirm Password is required').custom((value, { req }) => {                
+                return req.body.new_pass === value ?  true : false
               }).withMessage("New password & Confirm password don't match.")
             ]
         }  
@@ -45,12 +41,8 @@ exports.validate = (method) => {
             return [          
               body('new_pass','new_pass is required').not().isEmpty()
               .matches(/((?=.*[A-Z])(?=.*\W).{6,6})/).withMessage("New Password should be minimum 6 characters and include a capital letter and a special character"),
-              body('confirm_pass').not().isEmpty().withMessage('Confirm Password is required').custom((value, { req }) => {
-                if (req.body.new_pass === value) {
-                    return true;
-                } else {
-                    return false;
-                }
+              body('confirm_pass').not().isEmpty().withMessage('Confirm Password is required').custom((value, { req }) => {                
+                return req.body.new_pass === value ?  true : false
               }).withMessage("New password & Confirm password don't match.")
             ]
         }      
@@ -61,12 +53,8 @@ exports.validate = (method) => {
             //   .isLength({ min: 6 })
             //   .withMessage("Password must contain at least 6 characters")
               .matches(/((?=.*[A-Z])(?=.*\W).{6,6})/).withMessage("New Password should be minimum 6 characters and include a capital letter and a special character"),
-              body('confirm_pass').not().isEmpty().withMessage('confirm_pass is required').custom((value, { req }) => {
-                if (req.body.new_pass === value) {
-                    return true;
-                } else {
-                    return false;
-                }
+              body('confirm_pass').not().isEmpty().withMessage('confirm_pass is required').custom((value, { req }) => {               
+                return req.body.new_pass === value ?  true : false
               }).withMessage("New password & Confirm password don't match.")
             ]
         }
@@ -103,17 +91,17 @@ exports.validate = (method) => {
     }
 };
 
-const failures = ({ location, msg, param, value, nestedErrors }) => {
+const failures = ({ location, msg, parameter, value, nestedErrors }) => {
     return {
-        param: param,
+        param: parameter,
         message: msg,
         nestedErrors: nestedErrors
     }
 };
 
-const signupFailures = ({ location, msg, param, value, nestedErrors }) => {
+const signupFailures = ({ location, msg, parameter, value, nestedErrors }) => {
     return {
-        param: param,
+        param: parameter,
         message: msg,
         nestedErrors: nestedErrors
     }
@@ -123,7 +111,7 @@ const signupFailures = ({ location, msg, param, value, nestedErrors }) => {
 /** method for signin */
 module.exports.signIn = async (req, res, next) => {
   
-    const errors = validationResult(req).formatWith(signupFailures);;
+    const errors = validationResult(req).formatWith(signupFailures);
     if (!errors.isEmpty()) {
         res.status(422).json({ errors: errors.array() });
         return;
@@ -141,7 +129,7 @@ module.exports.signIn = async (req, res, next) => {
 /** method for signup */
 module.exports.signup = async (req, res, next) => {
  
-    const errors = validationResult(req).formatWith(signupFailures);;
+    const errors = validationResult(req).formatWith(signupFailures);
     if (!errors.isEmpty()) {
         res.status(422).json({ errors: errors.array() });
         return;
@@ -184,7 +172,7 @@ module.exports.updateProfile  = async (req, res, next) => {
 
 /** method for getProfile */
 module.exports.getProfile = async (req, res, next) => {
-    const errors = validationResult(req).formatWith(signupFailures);;
+    const errors = validationResult(req).formatWith(signupFailures);
     if (!errors.isEmpty()) {
         res.status(422).json({ errors: errors.array() });
         return;
@@ -296,12 +284,12 @@ module.exports.forgotPassword = async(req, res, next) => {
 
 /** method for Parent Category */
 module.exports.getParentCategory = async (req, res, next) => {
-    const errors = validationResult(req).formatWith(signupFailures);;
+    const errors = validationResult(req).formatWith(signupFailures);
     if (!errors.isEmpty()) {
         res.status(422).json({ errors: errors.array() });
         return;
     }
-    const result = await userModel.getParentCategory(req.query)
+    const result = await userModel.getParentCategory(req.body)
     if (result.status == 1) {     
         res.status(200).json({ status: 1, "message": 'success', data:result.data });       
     }
@@ -313,7 +301,7 @@ module.exports.getParentCategory = async (req, res, next) => {
 
 /** method for getProduct */
 module.exports.getProduct = async (req, res, next) => {
-    const errors = validationResult(req).formatWith(signupFailures);;
+    const errors = validationResult(req).formatWith(signupFailures);
     if (!errors.isEmpty()) {
         res.status(422).json({ errors: errors.array() });
         return;
@@ -330,7 +318,7 @@ module.exports.getProduct = async (req, res, next) => {
 
 /** method for get Content Video */
 module.exports.getVideo = async (req, res, next) => {
-    const errors = validationResult(req).formatWith(signupFailures);;
+    const errors = validationResult(req).formatWith(signupFailures);
     if (!errors.isEmpty()) {
         res.status(422).json({ errors: errors.array() });
         return;
@@ -349,12 +337,12 @@ module.exports.getVideo = async (req, res, next) => {
 
 /** method for FAQ */
 module.exports.getFAQ = async (req, res, next) => {
-    const errors = validationResult(req).formatWith(signupFailures);;
+    const errors = validationResult(req).formatWith(signupFailures);
     if (!errors.isEmpty()) {
         res.status(422).json({ errors: errors.array() });
         return;
     }
-    const result = await userModel.getFAQ(req.query)
+    const result = await userModel.getFAQ(req.body)
     if (result.status == 1) {
         res.status(200).json({ status: 1, "message": 'success', data:result.data, f_rsult : result.data_1 });       
     }
@@ -365,7 +353,7 @@ module.exports.getFAQ = async (req, res, next) => {
 }
 
 module.exports.getProgram = async (req, res, next) => {
-    const errors = validationResult(req).formatWith(signupFailures);;
+    const errors = validationResult(req).formatWith(signupFailures);
     if (!errors.isEmpty()) {
         res.status(422).json({ errors: errors.array() });
         return;
@@ -388,7 +376,7 @@ module.exports.getProgram = async (req, res, next) => {
 }
 
 module.exports.search = async (req, res, next) => {
-    const errors = validationResult(req).formatWith(signupFailures);;
+    const errors = validationResult(req).formatWith(signupFailures);
     if (!errors.isEmpty()) {
         res.status(422).json({ errors: errors.array() });
         return;
@@ -398,13 +386,111 @@ module.exports.search = async (req, res, next) => {
         res.status(200).json({ 
             status: 1, 
             message: 'success',
-            autoHome:result.autoHome,
-            vidoes:result.vidoes,
-            products:result.products,
+            // autoHome:result.autoHome,
+            // vidoes:result.vidoes,
+            // products:result.products,
+            // faqs:result.faq,
+            data:result.data
          });       
     }
     else {
         res.status(200).json({ status: 0, "message": result.message });
 
     }
+}
+
+module.exports.getUsers = async (req, res, next) => {
+    const errors = validationResult(req).formatWith(signupFailures);
+    if (!errors.isEmpty()) {
+        res.status(422).json({ errors: errors.array() });
+        return;
+    }
+    const userId = req.body.userId;
+    const result = await userModel.getUsers(req.query,userId)
+    if (result.status == 1) {
+        res.status(200).json({ status: 1, "message": 'success', totalRecord:result.totalRecords,page: result.page_number,data:result.data });       
+    }
+    else {
+        res.status(200).json({ status: 0, "message": result.message });
+
+    }
+}
+
+module.exports.addUser = async (req, res, next) => {
+    const errors = validationResult(req).formatWith(signupFailures);
+    if (!errors.isEmpty()) {
+        res.status(422).json({ errors: errors.array() });
+        return;
+    }
+    // const userId = req.body.userId;
+    // const result = await userModel.getUsers(req.query,userId)
+    const result = await userModel.addUser(req.body,req.body.userId)
+    if (result.status == 1) {
+        res.status(200).json({ status: 1, "message": result.message });    
+    }
+    else {
+        res.status(200).json({ status: 0, "message": result.message });
+
+    }
+}
+
+
+module.exports.getUserList = async (req, res, next) => {
+    const errors = validationResult(req).formatWith(signupFailures);
+    if (!errors.isEmpty()) {
+        res.status(422).json({ errors: errors.array() });
+        return;
+    }
+    const result = await userModel.getUserList(req.query)
+    if (result.status == 1) {
+        res.status(200).json({ status: 1, "message": 'success', totalRecord:result.totalRecords,page: result.page_number,data:result.data });       
+    }
+    else {
+        res.status(200).json({ status: 0, "message": result.message });
+
+    }
+}
+
+module.exports.getClientList = async (req, res, next) => {
+    const errors = validationResult(req).formatWith(signupFailures);
+    if (!errors.isEmpty()) {
+        res.status(422).json({ errors: errors.array() });
+        return;
+    }
+    const result = await userModel.getClientList(req.query)
+    if (result.status == 1) {
+        res.status(200).json({ status: 1, "message": 'success', totalRecord:result.totalRecords,page: result.page_number,data:result.data });       
+    }
+    else {
+        res.status(200).json({ status: 0, "message": result.message });
+
+    }
+}
+
+module.exports.convertPDFTOIMAGE = async (req, res, next) => {
+    const path = require('path');
+    let Filepath =  path.join(__dirname, '../../uploads/') + req.file.filename;	
+    const pdf = require('pdf-poppler');
+    //  console.log(Filepath)
+    let file = Filepath
+    console.log(path.dirname(file))
+    let opts = {
+        format: 'jpeg',
+        out_dir:path.dirname(file),
+        // out_dir: 'D:/MPLLC/liberty_node/uploads/1624445295806-mpllc-EmailCWBrokerPayrollAuto.pdf',
+        // out_prefix:path.join(__dirname, '../../uploads/'),  
+        scale: 4096,
+        out_prefix :Date.now()+'-pdf',
+        // page: 3,
+    
+    }
+ 
+    pdf.convert(file, opts)
+        .then(result => {
+            console.log('Successfully converted');
+        })
+        .catch(error => {
+            console.error(error);
+        })
+   
 }

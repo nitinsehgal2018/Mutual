@@ -20,6 +20,7 @@ var storage = multer.diskStorage({
   },
 });
 
-var uploadFile = multer({ storage: storage });
+var uploadFile = multer({ storage: storage,  limits: { fileSize: 8000000 }
+});
 // var uploadFile = multer({ storage: storage, fileFilter: excelFilter });
 module.exports = uploadFile;
